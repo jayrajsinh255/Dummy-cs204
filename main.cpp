@@ -19,7 +19,7 @@ Date:
 #include "myRISCVSim.h"
 #include <stdio.h>
 #include <stdlib.h>
-
+#include "myRISCVSim.cpp"
 int main(int argc, char** argv) {
   char* prog_mem_file; 
   if(argc < 2) {

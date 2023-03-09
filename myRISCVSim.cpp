@@ -17,14 +17,17 @@ Date:
 
 #include "myRISCVSim.h"
 #include <stdlib.h>
-#include <stdio.h>
-
+#include <iostream>
+#include <map>
+using namespace std;
 
 //Register file
-static unsigned int X[32];
+// static unsigned int X[32];
 //flags
 //memory
-static unsigned char MEM[4000];
+// static unsigned char MEM[4000];
+
+map<unsigned int,int> mem;
 
 //intermediate datapath and control path signals
 static unsigned int instruction_word;
@@ -59,7 +62,7 @@ void load_program_memory(char *file_name) {
     exit(1);
   }
   while(fscanf(fp, "%x %x", &address, &instruction) != EOF) {
-    write_word(MEM, address, instruction);
+    
   }
   fclose(fp);
 }
