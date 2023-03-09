@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
   //load the program memory
   load_program_memory(argv[1]);
   //run the simulator
-  run_riscvsim();
+  // run_riscvsim();
 
   return 1;
 }

@@ -19,6 +19,8 @@ Date:
 #include <stdlib.h>
 #include <iostream>
 #include <map>
+#include "global_variables.h"
+#include "builtin_funcs.h"
 using namespace std;
 
 //Register file
@@ -27,7 +29,7 @@ using namespace std;
 //memory
 // static unsigned char MEM[4000];
 
-map<unsigned int,int> mem;
+map<unsigned int,unsigned int> mem;
 
 //intermediate datapath and control path signals
 static unsigned int instruction_word;
@@ -35,19 +37,20 @@ static unsigned int operand1;
 static unsigned int operand2;
 
 
-void run_riscvsim() {
-  while(1) {
-    fetch();
-    decode();
-    execute();
-    mem();
-    write_back();
-  }
-}
+// void run_riscvsim() {
+//   while(1) {
+//     fetch();
+//     decode();
+//     execute();
+//     mem();
+//     write_back();
+//   }
+// }
 
 // it is used to set the reset values
 //reset all registers and memory content to 0
 void reset_proc() {
+  //set PC to zero
 
 }
 
@@ -62,59 +65,65 @@ void load_program_memory(char *file_name) {
     exit(1);
   }
   while(fscanf(fp, "%x %x", &address, &instruction) != EOF) {
-    
+    mem[(unsigned int) address]=(unsigned int)instruction;
+    printf("%x %u\n",address,mem[(unsigned int) address]);//  
   }
   fclose(fp);
 }
 
 //writes the data memory in "data_out.mem" file
-void write_data_memory() {
-  FILE *fp;
-  unsigned int i;
-  fp = fopen("data_out.mem", "w");
-  if(fp == NULL) {
-    printf("Error opening dataout.mem file for writing\n");
-    return;
-  }
+// void write_data_memory() {
+//   FILE *fp;
+//   unsigned int i;
+//   fp = fopen("data_out.mem", "w");
+//   if(fp == NULL) {
+//     printf("Error opening dataout.mem file for writing\n");
+//     return;
+//   }
   
-  for(i=0; i < 4000; i = i+4){
-    fprintf(fp, "%x %x\n", i, read_word(MEM, i));
-  }
-  fclose(fp);
-}
+//   for(i=0; i < 4000; i = i+4){
+//     fprintf(fp, "%x %x\n", i, read_word(MEM, i));
+//   }
+//   fclose(fp);
+// }
 
-//should be called when instruction is swi_exit
-void swi_exit() {
-  write_data_memory();
-  exit(0);
-}
+// //should be called when instruction is swi_exit
+// void swi_exit() {
+//   write_data_memory();
+//   exit(0);
+// }
 
 
-//reads from the instruction memory and updates the instruction register
+// //reads from the instruction memory and updates the instruction register
 void fetch() {
-}
-//reads the instruction register, reads operand1, operand2 fromo register file, decides the operation to be performed in execute stage
-void decode() {
-}
-//executes the ALU operation based on ALUop
-void execute() {
-}
-//perform the memory operation
-void mem() {
-}
-//writes the results back to register file
-void write_back() {
-}
+  unsigned int instruct_dec=mem[(unsigned int )PC];
+  string instruction=dec2bin(instruct_dec);
 
 
-int read_word(char *mem, unsigned int address) {
-  int *data;
-  data =  (int*) (mem + address);
-  return *data;
-}
 
-void write_word(char *mem, unsigned int address, unsigned int data) {
-  int *data_p;
-  data_p = (int*) (mem + address);
-  *data_p = data;
 }
+// //reads the instruction register, reads operand1, operand2 fromo register file, decides the operation to be performed in execute stage
+// void decode() {
+// }
+// //executes the ALU operation based on ALUop
+// void execute() {
+// }
+// //perform the memory operation
+// void mem() {
+// }
+// //writes the results back to register file
+// void write_back() {
+// }
+
+
+// int read_word(char *mem, unsigned int address) {
+//   int *data;
+//   data =  (int*) (mem + address);
+//   return *data;
+// }
+
+// void write_word(char *mem, unsigned int address, unsigned int data) {
+//   int *data_p;
+//   data_p = (int*) (mem + address);
+//   *data_p = data;
+// }

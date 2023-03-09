@@ -1,4 +1,5 @@
 jayraj{
     ingnored auipc
     not sure how jalr will work
+    zero extension not taken in account
 }
