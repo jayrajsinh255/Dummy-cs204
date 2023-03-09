@@ -143,8 +143,8 @@ class Control_unit{
         
     }
 
-    //isLd
-    
-
+    void setIsBranchTaken(bool val){
+        isBranchTaken=val;
+    }
 
 };
