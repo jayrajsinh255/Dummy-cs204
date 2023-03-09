@@ -35,7 +35,9 @@ map<unsigned int,unsigned int> mem;
 static unsigned int instruction_word;
 static unsigned int operand1;
 static unsigned int operand2;
-
+struct IF_DE_rest{
+  string instruction;
+}if_de_rest;
 
 // void run_riscvsim() {
 //   while(1) {
@@ -98,9 +100,7 @@ void load_program_memory(char *file_name) {
 void fetch() {
   unsigned int instruct_dec=mem[(unsigned int )PC];
   string instruction=dec2bin(instruct_dec);
-
-
-
+  if_de_rest.instruction=instruction;
 }
 // //reads the instruction register, reads operand1, operand2 fromo register file, decides the operation to be performed in execute stage
 // void decode() {
