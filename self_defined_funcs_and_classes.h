@@ -7,3 +7,4 @@ long long int bin2dec(string str);
 long long int unsgn_binaryToDecimal(string n);
 long long int sign_extn(string bin);
 long long int unsign_extn(string bin);
+int alu_unit(string aluSignal);

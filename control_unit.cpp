@@ -9,6 +9,7 @@ Control_unit::Control_unit(){
     aluSignal="add";
     branchSignal="nbr";
     isBranchTaken=false; //intially set to false later will be updated in execute stage by branch unit
+    branchSelect=0;
     isLd=false;
     isSt=false;
     isWb=false;
@@ -25,7 +26,13 @@ void Control_unit::build_control(){
     else{
         isImmediate=false;
     }
-
+    //jalr branch select is 1;
+    if(opcode=="1100111"){
+        branchSelect=1;
+    }
+    else{
+        branchSelect=0;
+    }
     //value of aluSignal
     if(opcode=="0110011"||opcode=="0010011"){
         string funct3=instruction.substr(17,3);
@@ -70,16 +77,19 @@ void Control_unit::build_control(){
             aluSignal="sltu";
         }
     }
-    if(opcode=="0000011"||opcode=="0100011"){
+    else if(opcode=="0000011"||opcode=="0100011"){
         aluSignal="add";
     }
     //for branch arithmetic operatio is subtraction
-    if(opcode=="1100011"){
+    else if(opcode=="1100011"){
         aluSignal="sub";
     }
     //for jalr addition
-    if(opcode=="1100111"){
+    else if(opcode=="1100111"){
         aluSignal="add";
+    }
+    else{
+        aluSignal="no_arth";
     }
 
     //value of branchSignal
@@ -101,15 +111,15 @@ void Control_unit::build_control(){
         else if(funct3=="110"){
             branchSignal="bltu";
         }
-        if(funct3=="111"){
+        else if(funct3=="111"){
             branchSignal="bgeu";
         }
         else{
             cout<<"** Undefined funct3 **"<<endl;
         }
     }
-    else if(opcode=="1101111"){
-        //jal and its unconditional branch
+    else if(opcode=="1101111"||opcode=="1100111"){
+        //jal and jalr as its unconditional branch
         branchSignal="ubr";
     }
     else{

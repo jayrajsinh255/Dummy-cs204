@@ -138,8 +138,61 @@ void decode(){
     printf("rd :%d\n",de_ex_rest.rd); 
 }
 // //executes the ALU operation based on ALUop
-// void execute() {
-// }
+void execute(){
+    long long int alu_result;
+    alu_result=alu_unit(mycontrol_unit.aluSignal);
+    if(mycontrol_unit.branchSelect==0){
+        //not jalr type
+        branchPC=de_ex_rest.branch_target+PC;
+    }
+    else if(mycontrol_unit.branchSelect==1){
+        //if jalr then pc
+        branchPC=alu_result;
+    }
+    if(mycontrol_unit.branchSignal=="nbr"){
+        mycontrol_unit.setIsBranchTaken(false);
+    }
+    else if(mycontrol_unit.branchSignal=="ubr"){
+        mycontrol_unit.setIsBranchTaken(true);
+    }
+    else{
+        if(mycontrol_unit.branchSignal=="beq"){
+            if(alu_result==0){
+                mycontrol_unit.setIsBranchTaken(true);
+            }
+            else{
+                mycontrol_unit.setIsBranchTaken(false); 
+            }   
+        }
+        else if(mycontrol_unit.branchSignal=="bne"){
+            if(alu_result!=0){
+                mycontrol_unit.setIsBranchTaken(true);
+            }
+            else{
+                mycontrol_unit.setIsBranchTaken(false); 
+            }   
+        }
+        else if(mycontrol_unit.branchSignal=="blt"){
+            if(alu_result<0){
+                mycontrol_unit.setIsBranchTaken(true);
+            }
+            else{
+                mycontrol_unit.setIsBranchTaken(false); 
+            }   
+        }
+        else if(mycontrol_unit.branchSignal=="bge"){
+            if(alu_result>=0){
+                mycontrol_unit.setIsBranchTaken(true);
+            }
+            else{
+                mycontrol_unit.setIsBranchTaken(false); 
+            }   
+        }    
+    }
+    ex_ma_rest.alu_result=alu_result;
+    ex_ma_rest.op2=(unsigned int) de_ex_rest.op2;
+    ex_ma_rest.rd=(unsigned int) de_ex_rest.rd;
+}
 // //perform the memory operation
 // void mem() {
 // }

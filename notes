@@ -2,4 +2,5 @@ jayraj{
     ingnored auipc
     not sure how jalr will work
     zero extension not taken in account
+    branchPC contains absolute value of PC and NOT offset
 }

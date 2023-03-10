@@ -3,6 +3,11 @@
 
 
 int main(){
-    // cout<<immediate("11111110010100100101011011100011")<<endl;
-    cout<<dec2bin(3818921994)<<endl;
+    int n=0xF0000000;
+    unsigned int u;
+    printf("%d\n",n);
+    
+    u=(n)>>2;
+    printf("%x\n",n);
+    printf("%x\n",u);
 }
