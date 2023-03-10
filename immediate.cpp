@@ -54,18 +54,16 @@ long long int immediate(string instruction){
         }   
     }
     else if(opcode=="0100011"){
-        //store
         imm_str=instruction.substr(0,7)+instruction.substr(20,5);
         imm=sign_extn(imm_str);
     }
     else if(opcode=="1100011"){
-        //branch type
         imm_str=instruction.substr(0,1)+instruction.substr(24,1)+instruction.substr(1,6)+instruction.substr(20,4)+"0";
         imm=sign_extn(imm_str);
     }
     else if(opcode=="1101111"){
-        //jal
-        imm_str=instruction.substr(0,1)+instruction.substr(12,8)+instruction.substr(11,1)+instruction.substr(30,10);
+        imm_str=instruction.substr(0,1)+instruction.substr(12,8)+instruction.substr(11,1)+instruction.substr(1,10)+"0";
+        cout<<imm_str<<" jal str"<<endl;
         imm=sign_extn(imm_str);
     }
     else if(opcode=="0110111"||opcode=="0010111"){
