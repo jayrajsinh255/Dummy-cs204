@@ -14,14 +14,16 @@ Date:
 /* myRISCVSim.cpp
    Purpose of this file: implementation file for myRISCVSim
 */
-
-#include "myRISCVSim.h"
-#include <stdlib.h>
-#include <iostream>
-#include <map>
-#include "global_variables.h"
 #include "builtin_funcs.h"
-#include "self_defined_funcs_and_classes.h"
+#include"self_defined_funcs_and_classes.h"
+// #include "RegisterFile.h"
+// #include "Control_unit.h"
+
+#ifndef GLOBAL
+#define GLOBAL
+#include "global_variables.h"
+#endif
+
 using namespace std;
 
 //Register file
@@ -30,34 +32,24 @@ using namespace std;
 //memory
 // static unsigned char MEM[4000];
 
-map<unsigned int,unsigned int> mem;
 
 //intermediate datapath and control path signals
-static unsigned int instruction_word;
-static unsigned int operand1;
-static unsigned int operand2;
 
-struct IF_DE_rest{
-  string instruction;
-}if_de_rest;
 
-struct DE_EX_rest{
-    int branch_target;
-    int B;
-    int A;
-    int op2;
-    int rd;
-}de_ex_rest;
+/*function prototypes*/
+void fetch();
+void decode();
 
-// void run_riscvsim() {
-//   while(1) {
-//     fetch();
-//     decode();
-//     execute();
-//     mem();
-//     write_back();
-//   }
-// }
+void run_riscvsim() {
+  while(1) {
+    fetch();
+    decode();
+    // execute();
+    // mem();
+    // write_back();
+    break;
+  }
+}
 
 // it is used to set the reset values
 //reset all registers and memory content to 0
@@ -78,7 +70,7 @@ void load_program_memory(char *file_name) {
   }
   while(fscanf(fp, "%x %x", &address, &instruction) != EOF) {
     mem[(unsigned int) address]=(unsigned int)instruction;
-    printf("%x %u\n",address,mem[(unsigned int) address]);//  
+    // printf("%x %u\n",address,mem[(unsigned int) address]);//  
   }
   fclose(fp);
 }
@@ -138,7 +130,12 @@ void decode(){
     }
     else{
         de_ex_rest.B=registerFile.get_register(rs2);
-    } 
+    }
+    printf("branch target :%d\n",de_ex_rest.branch_target);
+    printf("A :%d\n",de_ex_rest.A);
+    printf("B :%d\n",de_ex_rest.B);
+    printf("op2 :%d\n",de_ex_rest.op2);
+    printf("rd :%d\n",de_ex_rest.rd); 
 }
 // //executes the ALU operation based on ALUop
 // void execute() {

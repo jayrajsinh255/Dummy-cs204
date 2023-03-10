@@ -2,7 +2,7 @@
 class Control_unit{
     public:
     string instruction;
-    bool isImmediate=false;
+    bool isImmediate;
     string aluSignal;
     string branchSignal;
     bool isBranchTaken;

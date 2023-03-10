@@ -16,10 +16,10 @@ Date:
 */
 
 
-#include "myRISCVSim.h"
+#include "builtin_funcs.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "myRISCVSim.cpp"
+#include "myRISCVSim.h"
 int main(int argc, char** argv) {
   char* prog_mem_file; 
   if(argc < 2) {
@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
   //load the program memory
   load_program_memory(argv[1]);
   //run the simulator
-  // run_riscvsim();
+  run_riscvsim();
 
   return 1;
 }
