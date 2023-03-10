@@ -21,6 +21,7 @@ Date:
 #include <map>
 #include "global_variables.h"
 #include "builtin_funcs.h"
+#include "self_defined_funcs_and_classes.h"
 using namespace std;
 
 //Register file
@@ -98,13 +99,15 @@ void load_program_memory(char *file_name) {
 
 // //reads from the instruction memory and updates the instruction register
 void fetch() {
-  unsigned int instruct_dec=mem[(unsigned int )PC];
-  string instruction=dec2bin(instruct_dec);
-  if_de_rest.instruction=instruction;
+    unsigned int instruct_dec=mem[(unsigned int )PC];
+    string instruction=dec2bin(instruct_dec);
+    if_de_rest.instruction=instruction;
 }
 // //reads the instruction register, reads operand1, operand2 fromo register file, decides the operation to be performed in execute stage
-// void decode() {
-// }
+void decode() {
+
+
+}
 // //executes the ALU operation based on ALUop
 // void execute() {
 // }
