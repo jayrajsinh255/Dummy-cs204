@@ -1,9 +1,10 @@
-#include<iostream>
-#include<string>
+#include "builtin_funcs.h"
+#include "control_units.h"
 //ingnored auipc
 // not sure how jalr will work
-using namespace std;
+
 class Control_unit{
+    public:
     string instruction;
     bool isImmediate=false;
     string aluSignal;

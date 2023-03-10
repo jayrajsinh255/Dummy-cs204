@@ -36,9 +36,18 @@ map<unsigned int,unsigned int> mem;
 static unsigned int instruction_word;
 static unsigned int operand1;
 static unsigned int operand2;
+
 struct IF_DE_rest{
   string instruction;
 }if_de_rest;
+
+struct DE_EX_rest{
+    int branch_target;
+    int B;
+    int A;
+    int op2;
+    int rd;
+}de_ex_rest;
 
 // void run_riscvsim() {
 //   while(1) {
@@ -104,9 +113,32 @@ void fetch() {
     if_de_rest.instruction=instruction;
 }
 // //reads the instruction register, reads operand1, operand2 fromo register file, decides the operation to be performed in execute stage
-void decode() {
+void decode(){
+    // getting destination register
+    string rds=if_de_rest.instruction.substr(20,5);
+    int rd=(int)unsgn_binaryToDecimal(rds);
+    // getting source register 1
+    string rs1s=if_de_rest.instruction.substr(12,5);
+    int rs1=unsgn_binaryToDecimal(rs1s);
+    //getting source register 2
+    string rs2s=if_de_rest.instruction.substr(7,5);
+    int rs2=unsgn_binaryToDecimal(rs2s);
+    int imm=immediate(if_de_rest.instruction);
+    //setting the controls
+    mycontrol_unit.set_instruction(if_de_rest.instruction);
+    mycontrol_unit.build_control();
 
+    de_ex_rest.rd=rd;
+    de_ex_rest.A=registerFile.get_register(rs1);
+    de_ex_rest.op2=registerFile.get_register(rs2);
+    de_ex_rest.branch_target=imm;
 
+    if(mycontrol_unit.isImmediate){
+        de_ex_rest.B=imm;
+    }
+    else{
+        de_ex_rest.B=registerFile.get_register(rs2);
+    } 
 }
 // //executes the ALU operation based on ALUop
 // void execute() {
