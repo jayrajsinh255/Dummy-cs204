@@ -20,6 +20,10 @@ Date:
 #include <stdio.h>
 #include <stdlib.h>
 #include "myRISCVSim.h"
+#ifndef GLOBAL
+#define GLOBAL
+#include "global_variables.h"
+#endif
 int main(int argc, char** argv) {
   char* prog_mem_file; 
   if(argc < 2) {
