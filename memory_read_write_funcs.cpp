@@ -8,7 +8,7 @@ void memory_write(unsigned int address,unsigned long long int value,int bytes){
 unsigned long long int memory_read(unsigned int address,int bytes){
     unsigned long long int value=0;
     for(int i=0;i<bytes;i++){
-        value=(((unsigned long long int)mem[address+i])<<(i*8))|(value);
+        value=(((unsigned long long int)((unsigned char)mem[address+i]))<<(i*8))|(value);
     }
     return value;
 }
