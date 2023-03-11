@@ -18,12 +18,7 @@ Date:
 #include"self_defined_funcs_and_classes.h"
 // #include "RegisterFile.h"
 // #include "Control_unit.h"
-
-#ifndef GLOBAL
-#define GLOBAL
 #include "global_variables.h"
-#endif
-
 using namespace std;
 
 //Register file
