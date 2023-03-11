@@ -1,10 +1,14 @@
 #include"builtin_funcs.h"
 #include"self_defined_funcs_and_classes.h"
+#ifndef MYCLASSES
+#define MYCLASSES
 #include "RegisterFile.h"
 #include "Control_unit.h"
+#endif
 extern unsigned int PC;
 extern unsigned int nextPC;
 extern int branchPC;
+extern bool EXIT;
 extern map<unsigned int,unsigned int> mem;
 extern RegisterFile registerFile;
 extern Control_unit mycontrol_unit;

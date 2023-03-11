@@ -6,6 +6,7 @@ class Control_unit{
     string aluSignal;
     string branchSignal;
     bool isBranchTaken;
+    bool isexit;
     int branchSelect;
     bool isLd;
     bool isSt;

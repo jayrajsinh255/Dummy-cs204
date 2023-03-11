@@ -17,8 +17,11 @@ Date:
 #include "builtin_funcs.h"
 #include"self_defined_funcs_and_classes.h"
 #include "myRISCVSim.h"
-// #include "RegisterFile.h"
-// #include "Control_unit.h"
+#ifndef MYCLASSES
+#define MYCLASSES
+#include "RegisterFile.h"
+#include "Control_unit.h"
+#endif
 #include "global_variables.h"
 using namespace std;
 
@@ -35,16 +38,26 @@ using namespace std;
 /*function prototypes*/
 void fetch();
 void decode();
+void mA();
+void write_back();
 
 void run_riscvsim() {
-  while(1) {
-    fetch();
-    decode();
-    execute();
-    mA();
-    write_back();
-    // break;
-  }
+    EXIT=false;
+    int i=0;//
+    while(1) {
+        fetch();
+        decode();
+        if(EXIT){
+            cout<<"$$"<<registerFile.get_register(2)<<endl;
+            EXIT=false;
+            return;
+        }
+        execute();
+        mA();
+        write_back();
+        // break;
+        i++;//
+    }
 }
 
 // it is used to set the reset values
@@ -53,6 +66,8 @@ void reset_proc() {
   //set PC to zero
     PC=0;
     nextPC=0;
+    branchPC=0;
+    EXIT=false;
     mem.clear();
     for (int i = 0; i < 32; i++) {
         registerFile.set_register(i,0);
@@ -125,6 +140,7 @@ void load_program_memory(char *file_name) {
 
 // //reads from the instruction memory and updates the instruction register
 void fetch() {
+    cout<<"PC="<<PC<<endl;
     if(mycontrol_unit.isBranchTaken){
         PC=branchPC;
     }
@@ -138,6 +154,14 @@ void fetch() {
 }
 // //reads the instruction register, reads operand1, operand2 fromo register file, decides the operation to be performed in execute stage
 void decode(){
+    //setting the controls
+    mycontrol_unit.set_instruction(if_de_rest.instruction);
+    mycontrol_unit.build_control();
+    if(mycontrol_unit.isexit){
+        EXIT=true;
+        return;
+    }
+
     // getting destination register
     string rds=if_de_rest.instruction.substr(20,5);
     int rd=(int)unsgn_binaryToDecimal(rds);
@@ -148,9 +172,6 @@ void decode(){
     string rs2s=if_de_rest.instruction.substr(7,5);
     int rs2=unsgn_binaryToDecimal(rs2s);
     int imm=immediate(if_de_rest.instruction);
-    //setting the controls
-    mycontrol_unit.set_instruction(if_de_rest.instruction);
-    mycontrol_unit.build_control();
 
     de_ex_rest.rd=rd;
     de_ex_rest.A=registerFile.get_register(rs1);
@@ -237,17 +258,17 @@ void mA() {
 
     //load operation
     if(mycontrol_unit.isLd){
-        if(mycontrol_unit.nBytes=1){
+        if(mycontrol_unit.nBytes==1){
             my_char=(char)memory_read((unsigned int)ex_ma_rest.alu_result,1);
             my_int=(int)my_char;
             ldResult=(unsigned int)my_int;
         }
-        else if(mycontrol_unit.nBytes=2){
+        else if(mycontrol_unit.nBytes==2){
             my_short_int=(short int)memory_read((unsigned int)ex_ma_rest.alu_result,2);
             my_int=(int)my_short_int;
             ldResult=(unsigned int)my_int;
         }
-        else if(mycontrol_unit.nBytes=4){
+        else if(mycontrol_unit.nBytes==4){
             ldResult=(int)memory_read((unsigned int)ex_ma_rest.alu_result,4);
         }
         else{
@@ -260,13 +281,13 @@ void mA() {
 
     //store operation
     if(mycontrol_unit.isSt){
-        if(mycontrol_unit.nBytes=1){
+        if(mycontrol_unit.nBytes==1){
             memory_write((unsigned int)ex_ma_rest.alu_result,(unsigned long long int) ex_ma_rest.op2,1);
         }
-        else if(mycontrol_unit.nBytes=2){
+        else if(mycontrol_unit.nBytes==2){
             memory_write((unsigned int)ex_ma_rest.alu_result,(unsigned long long int) ex_ma_rest.op2,2);
         }
-        else if(mycontrol_unit.nBytes=4){
+        else if(mycontrol_unit.nBytes==4){
             memory_write((unsigned int)ex_ma_rest.alu_result,(unsigned long long int) ex_ma_rest.op2,4);
         }
         else{
