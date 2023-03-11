@@ -8,3 +8,5 @@ long long int unsgn_binaryToDecimal(string n);
 long long int sign_extn(string bin);
 long long int unsign_extn(string bin);
 int alu_unit(string aluSignal);
+void memory_write(unsigned int address,unsigned long long int value,int bytes);
+unsigned long long int memory_read(unsigned int address,int bytes);

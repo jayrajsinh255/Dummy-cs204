@@ -4,7 +4,7 @@
 #include "Control_unit.h"
 unsigned int PC=0;
 int branchPC;
-map<unsigned int,unsigned int> mem;
+map<unsigned int,char> mem;
 RegisterFile registerFile;
 Control_unit mycontrol_unit;
 

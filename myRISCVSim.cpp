@@ -16,6 +16,7 @@ Date:
 */
 #include "builtin_funcs.h"
 #include"self_defined_funcs_and_classes.h"
+#include "myRISCVSim.h"
 // #include "RegisterFile.h"
 // #include "Control_unit.h"
 #include "global_variables.h"
@@ -39,7 +40,7 @@ void run_riscvsim() {
   while(1) {
     fetch();
     decode();
-    // execute();
+    execute();
     // mem();
     // write_back();
     break;
@@ -64,7 +65,7 @@ void load_program_memory(char *file_name) {
     exit(1);
   }
   while(fscanf(fp, "%x %x", &address, &instruction) != EOF) {
-    mem[(unsigned int) address]=(unsigned int)instruction;
+    memory_write((unsigned int) address,(unsigned long long int)instruction,4);
     // printf("%x %u\n",address,mem[(unsigned int) address]);//  
   }
   fclose(fp);
@@ -95,7 +96,7 @@ void load_program_memory(char *file_name) {
 
 // //reads from the instruction memory and updates the instruction register
 void fetch() {
-    unsigned int instruct_dec=mem[(unsigned int )PC];
+    unsigned int instruct_dec=(unsigned int) memory_read((unsigned int )PC,4);
     string instruction=dec2bin(instruct_dec);
     if_de_rest.instruction=instruction;
 }
@@ -187,6 +188,9 @@ void execute(){
     ex_ma_rest.alu_result=alu_result;
     ex_ma_rest.op2=(unsigned int) de_ex_rest.op2;
     ex_ma_rest.rd=(unsigned int) de_ex_rest.rd;
+    printf("alu result :%u \n",ex_ma_rest.alu_result);
+    printf("op2 : %u\n",ex_ma_rest.op2);
+    printf("rd :%u\n",ex_ma_rest.rd);
 }
 // //perform the memory operation
 // void mem() {
