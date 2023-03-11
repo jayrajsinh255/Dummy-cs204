@@ -51,7 +51,21 @@ void run_riscvsim() {
 //reset all registers and memory content to 0
 void reset_proc() {
   //set PC to zero
-
+    PC=0;
+    mem.clear();
+    for (int i = 0; i < 32; i++) {
+        registerFile.set_register(i,0);
+        if (i == 2) {
+            // x[i] = 0x7FFFFFF0; // sp
+                registerFile.set_register(i, strtol("0x7FFFFFF0", NULL, 16)); // sp
+            
+        }
+        else if (i == 3) {
+            // x[i] = 0x10000000; // gp
+            registerFile.set_register(i,strtol("0x10000000", NULL, 16)); // gp
+        }
+    }
+    
 }
 
 //load_program_memory reads the input memory, and pupulates the instruction 
