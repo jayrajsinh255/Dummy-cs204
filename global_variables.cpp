@@ -3,6 +3,7 @@
 #include "RegisterFile.h"
 #include "Control_unit.h"
 unsigned int PC=0;
+unsigned int nextPC=0;
 int branchPC;
 map<unsigned int,char> mem;
 RegisterFile registerFile;
@@ -29,3 +30,9 @@ struct EX_MA_rest{
     unsigned int op2;
     unsigned int rd;
 }ex_ma_rest;
+
+struct MA_WB_rest{
+    unsigned int alu_result;
+    unsigned int ld_result;
+    unsigned int rd;
+}ma_wb_rest;

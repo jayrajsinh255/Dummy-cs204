@@ -13,6 +13,8 @@ Control_unit::Control_unit(){
     isLd=false;
     isSt=false;
     isWb=false;
+    wbSignal="alu";
+    nBytes=0;
 }
 void Control_unit::set_instruction(string instruct){
     instruction=instruct;
@@ -26,6 +28,8 @@ void Control_unit::build_control(){
     else{
         isImmediate=false;
     }
+
+    //value for branchSelect
     //jalr branch select is 1;
     if(opcode=="1100111"){
         branchSelect=1;
@@ -33,6 +37,9 @@ void Control_unit::build_control(){
     else{
         branchSelect=0;
     }
+
+    
+
     //value of aluSignal
     if(opcode=="0110011"||opcode=="0010011"){
         string funct3=instruction.substr(17,3);
@@ -136,12 +143,42 @@ void Control_unit::build_control(){
         isSt=true;
     }
 
+    //value of nBytes
+    if(opcode=="0000011"||opcode=="0100011"){
+        string funct3=instruction.substr(17,3);
+        if(funct3=="000"){
+            nBytes=1;
+        }
+        else if(funct3=="001"){
+            nBytes=2;
+        }
+        else if(funct3=="010"){
+            nBytes=4;
+        }
+    }
+    else{
+        nBytes=0;
+    }
+    
     //value of isWb
     if(opcode=="0110011"||opcode=="0010011"||opcode=="0000011"||opcode=="1101111"||
     opcode=="1100111"||opcode=="0110111"||opcode=="0010111"){
         isWb=true;
     }
-    
+
+    //value of wbSignal
+    if(opcode=="0110011"||opcode=="0010011"||opcode=="0110111"){
+        wbSignal="alu";
+    }
+    else if(opcode=="0000011"){
+        wbSignal="ld";
+    }
+    else if(opcode=="1101111"||opcode=="1100111"){
+        wbSignal="pc+4";
+    }
+    else{
+        wbSignal="alu";
+    }    
 }
 void Control_unit::setIsBranchTaken(bool val){
     isBranchTaken=val;

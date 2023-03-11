@@ -10,6 +10,8 @@ class Control_unit{
     bool isLd;
     bool isSt;
     bool isWb;
+    int nBytes;
+    string wbSignal;
     Control_unit();
     void set_instruction(string instruct);
     void build_control();

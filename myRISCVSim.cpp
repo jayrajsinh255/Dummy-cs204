@@ -41,9 +41,9 @@ void run_riscvsim() {
     fetch();
     decode();
     execute();
-    // mem();
-    // write_back();
-    break;
+    mA();
+    write_back();
+    // break;
   }
 }
 
@@ -52,6 +52,7 @@ void run_riscvsim() {
 void reset_proc() {
   //set PC to zero
     PC=0;
+    nextPC=0;
     mem.clear();
     for (int i = 0; i < 32; i++) {
         registerFile.set_register(i,0);
@@ -65,7 +66,21 @@ void reset_proc() {
             registerFile.set_register(i,strtol("0x10000000", NULL, 16)); // gp
         }
     }
-    
+    if_de_rest.instruction="";
+
+    de_ex_rest.A=0;
+    de_ex_rest.B=0;
+    de_ex_rest.branch_target=0;
+    de_ex_rest.op2=0;
+    de_ex_rest.rd=0;
+
+    ex_ma_rest.alu_result=0;
+    ex_ma_rest.op2=0;
+    ex_ma_rest.rd=0;
+
+    ma_wb_rest.alu_result=0;
+    ma_wb_rest.ld_result=0;
+    ma_wb_rest.rd=0;    
 }
 
 //load_program_memory reads the input memory, and pupulates the instruction 
@@ -110,6 +125,13 @@ void load_program_memory(char *file_name) {
 
 // //reads from the instruction memory and updates the instruction register
 void fetch() {
+    if(mycontrol_unit.isBranchTaken){
+        PC=branchPC;
+    }
+    else{
+        PC=nextPC;
+    }
+    nextPC=PC+4;
     unsigned int instruct_dec=(unsigned int) memory_read((unsigned int )PC,4);
     string instruction=dec2bin(instruct_dec);
     if_de_rest.instruction=instruction;
@@ -207,11 +229,73 @@ void execute(){
     printf("rd :%u\n",ex_ma_rest.rd);
 }
 // //perform the memory operation
-// void mem() {
-// }
+void mA() {
+    unsigned int ldResult=0;
+    char my_char;
+    short int my_short_int;
+    int my_int;
+
+    //load operation
+    if(mycontrol_unit.isLd){
+        if(mycontrol_unit.nBytes=1){
+            my_char=(char)memory_read((unsigned int)ex_ma_rest.alu_result,1);
+            my_int=(int)my_char;
+            ldResult=(unsigned int)my_int;
+        }
+        else if(mycontrol_unit.nBytes=2){
+            my_short_int=(short int)memory_read((unsigned int)ex_ma_rest.alu_result,2);
+            my_int=(int)my_short_int;
+            ldResult=(unsigned int)my_int;
+        }
+        else if(mycontrol_unit.nBytes=4){
+            ldResult=(int)memory_read((unsigned int)ex_ma_rest.alu_result,4);
+        }
+        else{
+            cout<<"nBytes is "<<mycontrol_unit.nBytes<<"not supported"<<endl;
+        }
+    }
+    else{
+        ldResult=0;
+    }
+
+    //store operation
+    if(mycontrol_unit.isSt){
+        if(mycontrol_unit.nBytes=1){
+            memory_write((unsigned int)ex_ma_rest.alu_result,(unsigned long long int) ex_ma_rest.op2,1);
+        }
+        else if(mycontrol_unit.nBytes=2){
+            memory_write((unsigned int)ex_ma_rest.alu_result,(unsigned long long int) ex_ma_rest.op2,2);
+        }
+        else if(mycontrol_unit.nBytes=4){
+            memory_write((unsigned int)ex_ma_rest.alu_result,(unsigned long long int) ex_ma_rest.op2,4);
+        }
+        else{
+            cout<<"nBytes is "<<mycontrol_unit.nBytes<<"not supported"<<endl;
+        }   
+    }
+    ma_wb_rest.alu_result=ex_ma_rest.alu_result;
+    ma_wb_rest.ld_result=ldResult;
+    ma_wb_rest.rd=ex_ma_rest.rd;
+}
 // //writes the results back to register file
-// void write_back() {
-// }
+void write_back() {
+    if(mycontrol_unit.isWb){
+        unsigned int wb_result=0;
+        if(mycontrol_unit.wbSignal=="alu"){
+            wb_result=ma_wb_rest.alu_result;
+        }
+        else if(mycontrol_unit.wbSignal=="ld"){
+            wb_result=ma_wb_rest.ld_result;
+        }
+        else if(mycontrol_unit.wbSignal=="pc+4"){
+            wb_result=PC+4;
+        }
+        else{
+            cout<<"error :undefined wbSignal"<<endl;
+        }
+        registerFile.set_register(ma_wb_rest.rd,wb_result);
+    }
+}
 
 
 // int read_word(char *mem, unsigned int address) {

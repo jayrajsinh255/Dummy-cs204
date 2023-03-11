@@ -3,11 +3,9 @@
 
 
 int main(){
-    int n=0xF0000000;
-    unsigned int u;
-    printf("%d\n",n);
-    
-    u=(n)>>2;
-    printf("%x\n",n);
-    printf("%x\n",u);
+    char c=0xF0;
+    int a =c;
+    unsigned char ch=c;
+    unsigned int b=(unsigned int)ch;
+    printf("%X %X\n",a,b);
 }

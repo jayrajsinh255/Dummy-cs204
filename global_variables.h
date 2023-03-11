@@ -3,6 +3,7 @@
 #include "RegisterFile.h"
 #include "Control_unit.h"
 extern unsigned int PC;
+extern unsigned int nextPC;
 extern int branchPC;
 extern map<unsigned int,unsigned int> mem;
 extern RegisterFile registerFile;
@@ -28,6 +29,12 @@ struct EX_MA_rest{
     unsigned int op2;
     unsigned int rd;
 };
+struct MA_WB_rest{
+    unsigned int alu_result;
+    unsigned int ld_result;
+    unsigned int rd;
+};
 extern struct IF_DE_rest if_de_rest;
 extern struct DE_EX_rest de_ex_rest;
 extern struct EX_MA_rest ex_ma_rest;
+extern struct MA_WB_rest ma_wb_rest;

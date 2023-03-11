@@ -33,7 +33,7 @@ int alu_unit(string aluSignal){
         alu_result=((unsigned int) de_ex_rest.A<(unsigned int)de_ex_rest.B)?1:0;
     }
     else if(aluSignal=="no_arth"){
-        alu_result=de_ex_rest.A;
+        alu_result=de_ex_rest.B;
     }
     return alu_result;
 }
