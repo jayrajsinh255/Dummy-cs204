@@ -95,7 +95,7 @@ void Control_unit::build_control(){
         }
         //for branch arithmetic operatio is subtraction
         else if(opcode=="1100011"){
-            aluSignal="sub";
+            aluSignal="compare";
         }
         //for jalr addition
         else if(opcode=="1100111"){

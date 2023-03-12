@@ -43,11 +43,14 @@ void write_back();
 
 void run_riscvsim() {
     EXIT=false;
+    int i;
     while(1) {
+        // cout<<"PC :"<<PC<<endl;
         fetch();
         decode();
         if(EXIT){
             EXIT=false;
+            registerFile.print_registers();
             printf("ORIGINAL\n");
             unsigned int addr=0x10001000;
             for(int i=0;i<10;i++){
@@ -65,6 +68,10 @@ void run_riscvsim() {
         execute();
         mA();
         write_back();
+        // break;
+        // registerFile.print_registers();
+        // cout<<"enter some number"<<endl;
+        // cin>>i;
     }
 }
 
@@ -148,7 +155,6 @@ void load_program_memory(char *file_name) {
 
 // //reads from the instruction memory and updates the instruction register
 void fetch() {
-    cout<<"PC="<<PC<<endl;
     if(mycontrol_unit.isBranchTaken){
         PC=branchPC;
     }
@@ -156,9 +162,12 @@ void fetch() {
         PC=nextPC;
     }
     nextPC=PC+4;
+    // printf("PC=%x\n",PC);
     unsigned int instruct_dec=(unsigned int) memory_read((unsigned int )PC,4);
+    // printf("%x ##\n",instruct_dec);//
     string instruction=dec2bin(instruct_dec);
     if_de_rest.instruction=instruction;
+    // cout<<if_de_rest.instruction<<" ##"<<endl;////
 }
 // //reads the instruction register, reads operand1, operand2 fromo register file, decides the operation to be performed in execute stage
 void decode(){
@@ -172,6 +181,8 @@ void decode(){
 
     // getting destination register
     string rds=if_de_rest.instruction.substr(20,5);
+    cout<<if_de_rest.instruction<<" ##"<<endl;//
+    cout<<rds<<"**$**"<<endl;//
     int rd=(int)unsgn_binaryToDecimal(rds);
     // getting source register 1
     string rs1s=if_de_rest.instruction.substr(12,5);
@@ -192,16 +203,17 @@ void decode(){
     else{
         de_ex_rest.B=registerFile.get_register(rs2);
     }
-    printf("branch target :%d\n",de_ex_rest.branch_target);
-    printf("A :%d\n",de_ex_rest.A);
-    printf("B :%d\n",de_ex_rest.B);
-    printf("op2 :%d\n",de_ex_rest.op2);
-    printf("rd :%d\n",de_ex_rest.rd); 
+    // printf("branch target :%d\n",de_ex_rest.branch_target);//
+    // printf("A :%d\n",de_ex_rest.A);//
+    // printf("B :%d\n",de_ex_rest.B);//
+    // printf("op2 :%d\n",de_ex_rest.op2);//
+    // printf("rd :%d\n",de_ex_rest.rd); //
 }
 // //executes the ALU operation based on ALUop
 void execute(){
     long long int alu_result;
     alu_result=alu_unit(mycontrol_unit.aluSignal);
+    // printf("%d alu_result\n",alu_result);//
     if(mycontrol_unit.branchSelect==0){
         //not jalr type
         branchPC=de_ex_rest.branch_target+PC;
@@ -242,6 +254,7 @@ void execute(){
             }   
         }
         else if(mycontrol_unit.branchSignal=="bge"){
+            printf("Bge ##");//
             if(alu_result>=0){
                 mycontrol_unit.setIsBranchTaken(true);
             }
@@ -253,9 +266,9 @@ void execute(){
     ex_ma_rest.alu_result=alu_result;
     ex_ma_rest.op2=(unsigned int) de_ex_rest.op2;
     ex_ma_rest.rd=(unsigned int) de_ex_rest.rd;
-    printf("alu result :%u \n",ex_ma_rest.alu_result);
-    printf("op2 : %u\n",ex_ma_rest.op2);
-    printf("rd :%u\n",ex_ma_rest.rd);
+    // printf("alu result :%u \n",ex_ma_rest.alu_result);//
+    // printf("op2 : %u\n",ex_ma_rest.op2);//
+    // printf("rd :%u\n",ex_ma_rest.rd);//
 }
 // //perform the memory operation
 void mA() {
@@ -323,6 +336,7 @@ void write_back() {
             cout<<"error :undefined wbSignal"<<endl;
         }
         registerFile.set_register(ma_wb_rest.rd,wb_result);
+        cout<<"rd: "<<ma_wb_rest.rd<<"\nvalue: "<<wb_result<<endl;
     }
 }
 
