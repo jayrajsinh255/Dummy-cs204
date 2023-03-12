@@ -43,20 +43,28 @@ void write_back();
 
 void run_riscvsim() {
     EXIT=false;
-    int i=0;//
     while(1) {
         fetch();
         decode();
         if(EXIT){
-            cout<<"$$"<<registerFile.get_register(2)<<endl;
             EXIT=false;
+            printf("ORIGINAL\n");
+            unsigned int addr=0x10001000;
+            for(int i=0;i<10;i++){
+                printf("%d. %d\n",i+1,(unsigned int)memory_read(addr,4));
+                addr+=4;
+            }
+            printf("SORTED\n");
+            addr=0x10002000;
+            for(int i=0;i<10;i++){
+                printf("%d. %d\n",i+1,(unsigned int)memory_read(addr,4));
+                addr+=4;
+            }
             return;
         }
         execute();
         mA();
         write_back();
-        // break;
-        i++;//
     }
 }
 

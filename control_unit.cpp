@@ -143,10 +143,16 @@ void Control_unit::build_control(){
         if(opcode=="0000011"){
             isLd=true;
         }
+        else{
+            isLd=false;
+        }
         
         //value of isSt
         if(opcode=="0100011"){
             isSt=true;
+        }
+        else{
+            isSt=false;
         }
 
         //value of nBytes
@@ -170,6 +176,9 @@ void Control_unit::build_control(){
         if(opcode=="0110011"||opcode=="0010011"||opcode=="0000011"||opcode=="1101111"||
         opcode=="1100111"||opcode=="0110111"||opcode=="0010111"){
             isWb=true;
+        }
+        else{
+            isWb=false;
         }
 
         //value of wbSignal
